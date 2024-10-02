@@ -43,6 +43,7 @@ const FileCardWrapper = ({ name, onRotate, onRemove, children }) => {
 					width: "calc(100% - 48px)",
 				}}
 				title={name}
+        textAlign={"center"}
 			>
 				{name}
 			</Typography>

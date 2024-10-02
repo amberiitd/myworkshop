@@ -9,6 +9,8 @@ import MergePdfs from "./MergePdfs";
 import UnlockPdf from "./UnlockPdf";
 import LockPdf from "./LockPdf";
 import ImageToPdf from "./ImageToPdf";
+import Experiment from "./Experiment";
+import SignPdf from "./SignPdf";
 
 const AppLayout = () => {
 	const { windowSize } = useAppContext();
@@ -20,10 +22,12 @@ const AppLayout = () => {
 			<MainLayout padding={windowSize > 2 ? "64px 16px 32px 225px" : "64px 16px 32px 16px"}>
 				<Routes>
 					<Route path="home" element={<Home />} />
-          <Route path="merge-pdfs" element={<MergePdfs />} />
-          <Route path="unlock-pdf" element={<UnlockPdf />} />
-          <Route path="lock-pdf" element={<LockPdf />} />
-          <Route path="image-to-pdf" element={<ImageToPdf />} />
+					<Route path="merge-pdfs" element={<MergePdfs />} />
+					<Route path="unlock-pdf" element={<UnlockPdf />} />
+					<Route path="lock-pdf" element={<LockPdf />} />
+					<Route path="image-to-pdf" element={<ImageToPdf />} />
+					{/* <Route path="experiment" element={<Experiment />} /> */}
+					<Route path="sign-pdf" element={<SignPdf />} />
 				</Routes>
 			</MainLayout>
 		</div>

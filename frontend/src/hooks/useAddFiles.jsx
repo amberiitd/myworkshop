@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash";
 import { useRef } from "react";
 
-const useAddFiles = (onChange, fileTypes) => {
+const useAddFiles = (onChange, fileTypes=[]) => {
 	const inputRef = useRef();
 	const buttonRef = useRef();
 
@@ -19,7 +19,7 @@ const useAddFiles = (onChange, fileTypes) => {
 				fileInput.style.display = "none";
 				fileInput.addEventListener("change", async (e) => {
 					if (!isEmpty(e.target.files)) {
-						onChange(Array.from(e.target.files));
+						await onChange(Array.from(e.target.files));
 						inputRef.current.value = "";
 					}
 				});

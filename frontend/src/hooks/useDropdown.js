@@ -42,5 +42,7 @@ export const useDropdown = () => {
       }
     },
     open,
+    handleOpen,
+    handleClose
   };
 };

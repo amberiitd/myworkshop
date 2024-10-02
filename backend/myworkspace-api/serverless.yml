@@ -1,0 +1,78 @@
+service: myworkspace-api
+frameworkVersion: '3'
+
+custom:
+  accountId: ${aws:accountId}
+  serverless-offline:
+    httpPort: 8080
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ap-south-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    S3_FILE_BUCKET: myworkspace-infra-files-${self:provider.stage}
+    REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource:
+            - "arn:aws:s3:::${self:provider.environment.S3_FILE_BUCKET}"
+            - "arn:aws:s3:::${self:provider.environment.S3_FILE_BUCKET}/*"
+
+functions:
+  generalApi:
+    handler: src/index.handler
+    timeout: 30
+    events:
+      - http:
+          path: uploads/{proxy+}
+          method: post
+          cors:
+            origin: "*"
+            headers: 
+              - Content-Type
+              - Authorization
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Auth-Token
+      - http:
+          path: decrypt
+          method: post
+          cors:
+            origin: "*"
+            headers: 
+              - Content-Type
+              - Authorization
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Auth-Token
+      - http:
+          path: encrypt
+          method: post
+          cors:
+            origin: "*"
+            headers: 
+              - Content-Type
+              - Authorization
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Auth-Token
+
+
+
+plugins:
+  - serverless-offline

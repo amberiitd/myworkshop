@@ -1,5 +1,5 @@
-import * as pdfjs from "pdfjs-dist";
-import { useRef } from "react";
+import * as pdfjs from "pdfjs-dist/build/pdf";
+import { useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { wait } from "../util";
@@ -57,18 +57,28 @@ const useRenderPDF = (canvasRef) => {
 		image.src = url;
 	};
 
-	const renderView = async (file, option = { rotation: 0, maxWidth: 168, maxHeight: 170, scale: 0.2 }) => {
+	const renderView = async (
+		file,
+		option = { rotation: 0, maxWidth: 168, maxHeight: 170, scale: 0.2, pageNumber: 1, textLayer: null }
+	) => {
 		try {
-			const { rotation, maxWidth, maxHeight, scale } = option;
+			const { rotation, maxWidth, maxHeight, scale, pageNumber, textLayer } = option;
+
 			pdfjs.GlobalWorkerOptions.workerSrc = window.location.origin + "/pdf.worker.min.mjs";
-			const fileData = await file.arrayBuffer();
-			const pdfDoc = await pdfjs.getDocument({ data: fileData }).promise;
-			const firstPage = await pdfDoc.getPage(1);
+			let pdfDoc;
+			if (file instanceof File) {
+				const fileData = await file.arrayBuffer();
+				pdfDoc = await pdfjs.getDocument({ data: fileData }).promise;
+			} else {
+				pdfDoc = await pdfjs.getDocument(file).promise;
+			}
+
+			const firstPage = await pdfDoc.getPage(pageNumber);
 			const viewport = firstPage.getViewport({ scale, rotation });
 			const canvas = canvasRef.current;
 			const context = canvas.getContext("2d");
 
-      if (viewport.width < viewport.height) {
+			if (viewport.width < viewport.height) {
 				canvas.height = Math.min(maxHeight, viewport.height);
 				canvas.width = (canvas.height * viewport.width) / viewport.height;
 			} else {
@@ -81,22 +91,35 @@ const useRenderPDF = (canvasRef) => {
 				await renderTaskRef.current.promise;
 			}
 
-      context.clearRect(0, 0, canvas.width, canvas.height);
-			renderTaskRef.current = firstPage.render({
-				canvasContext: context,
-				viewport,
-			});
-			await renderTaskRef.current.promise;
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			renderTaskRef.current = (async () => {
+				await firstPage.render({
+					canvasContext: context,
+					viewport,
+				}).promise;
+				if (textLayer) {
+          textLayer.style.left = canvas.offsetLeft + 'px';
+          textLayer.style.top = canvas.offsetTop + 'px';
+          textLayer.style.height = canvas.offsetHeight + 'px';
+          textLayer.style.width = canvas.offsetWidth + 'px';
+					await firstPage.getTextContent().then(function (textContent) {
+						const textLayerLocal = new pdfjs.TextLayer({
+							container: textLayer,
+							viewport: viewport,
+							textContentSource: textContent,
+						});
+
+						textLayerLocal.render();
+					});
+				}
+			})();
+			await renderTaskRef.current;
 		} catch (error) {
 			if (error.name === "RenderingCancelledException") {
 				console.log("Rendering cancelled.");
 			} else {
 				console.error("Render error:", error);
-				renderPlaceHolder(
-					<ErrorOutlineIcon style={{ fill: "grey" }} />,
-					"Error loading!",
-					option.maxHeight
-				);
+				renderPlaceHolder(<ErrorOutlineIcon style={{ fill: "grey" }} />, "Error loading!", option.maxHeight);
 			}
 		}
 	};

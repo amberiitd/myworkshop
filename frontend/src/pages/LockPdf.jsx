@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import useAddFiles from "../hooks/useAddFiles";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -10,19 +10,8 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import LockIcon from "@mui/icons-material/Lock";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { toast } from "react-toastify";
-
-const modalStyle = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: 400,
-	bgcolor: "background.paper",
-	// border: '2px solid #000',
-	borderRadius: 2,
-	boxShadow: 24,
-	p: 4,
-};
+import PasswordModal from "./common/PasswordModal";
+import { upload } from "../service/upload";
 
 const LockPdf = () => {
 	const [file, setFile] = useState();
@@ -31,6 +20,7 @@ const LockPdf = () => {
 	const [locked, setLocked] = useState();
 	const [locking, setLocking] = useState(false);
 	const [passwordModal, setPasswordModal] = useState({ open: false, onSubmit: noop, onCancel: noop });
+	const [remotePath, setRemotePath] = useState();
 
 	const { triggerRef } = useAddFiles(async (files) => {
 		if (isEmpty(files)) return;
@@ -38,11 +28,11 @@ const LockPdf = () => {
 		const pdfDoc = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
 		if (pdfDoc.isEncrypted) {
 			toast.error("Pdf file is already encrypted!");
-			renderPlaceHolder(<LockIcon style={{ fill: "grey" }} />, "PDF", 250);
+			renderPlaceHolder(<LockIcon style={{ fill: "grey" }} />, "PDF");
 		} else {
-			await render(files[0], { maxHeight: 250, maxWidth: 250, scale: 0.3 });
+			await render(files[0]);
 		}
-	});
+	}, ["application/pdf"]);
 
 	const clearCanvas = () => {
 		const canvas = canvasRef.current;
@@ -64,42 +54,35 @@ const LockPdf = () => {
 
 	const lock = async (file) => {
 		const pdfDoc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
-		console.log(pdfDoc);
 		if (!pdfDoc.isEncrypted) {
-			// fetch password and encrypt
-			// try {
-			// 	const PDFDocument = require("pdfkit");
-			// 	const blobStream = require("blob-stream");
-			// 	const passkey = await getPassword();
-			// 	console.log(passkey);
-			// 	// const lockedDoc = await PDFDocument.create();
-			// 	// const pdfDoc = await PDFDocument.load(await file.arrayBuffer());
-			// 	// // const copiedPages = lockedDoc.copyPages(pdfDoc, pdfDoc.getPageIndices());
-			// 	// // copiedPages
-			// 	const doc = new PDFKit({
-			// 		userPassword: passkey, // The password required to open the document
-			// 		ownerPassword: "default-passkey", // Optional: another password to control permissions
-			// 		permissions: {
-			// 			printing: "highResolution", // Allow high-resolution printing
-			// 			modifying: false, // Disable modifications
-			// 			copying: false, // Disable copying of content
-			// 			annotating: true, // Allow annotations
-			// 		},
-			// 	});
-			// 	const outStream = doc.pipe(blobStream());
+			// fetch password and decrypt
+			try {
+				setLocking(true);
+				const passkey = await getPassword();
+				let path;
+				if (remotePath) path = remotePath;
+				else {
+					path = await upload(file, "from-lock");
+					setRemotePath(path);
+				}
 
-			// 	const readableStream = new File().stream();
-			// 	await readableStream.pipeTo(doc);
-			// 	doc.end();
-			// 	outStream.on("finish", function () {
-			// 		// get a blob you can do whatever you like with
-			// 		const blob = outStream.toBlob("application/pdf");
-			// 		setLocked(blob);
-			// 	});
-			// } catch (error) {
-			// 	console.error("Encryption failed!", error);
-			// }
-      
+				// invoke decryption
+				const { targetUrl, errorMessage } = await fetch(process.env.REACT_APP_API_HOST + "/encrypt", {
+					method: "POST",
+					body: JSON.stringify({ sourcePath: path, password: passkey }),
+				}).then(async (res) => {
+					if (res.status === 200) return res.json();
+					else throw Error(JSON.stringify(await res.json()));
+				});
+
+				renderPlaceHolder(<LockIcon style={{ fill: "grey" }} />, "PDF");
+				setLocked(targetUrl);
+			} catch (error) {
+				console.error(error);
+				toast.error("Locking failed!");
+			} finally {
+				setLocking(false);
+			}
 		} else {
 			toast.info("Selected file is already encrypted.");
 		}
@@ -139,6 +122,7 @@ const LockPdf = () => {
 						onClick={() => {
 							setFile(null);
 							clearCanvas();
+							setLocked(null);
 						}}
 						color="error"
 						startIcon={<CloseIcon fontSize="small" />}
@@ -150,8 +134,8 @@ const LockPdf = () => {
 							size="small"
 							onClick={() => lock(file)}
 							variant="contained"
-							startIcon={<LockIcon fontSize="small" />}
-							disabled={false}
+							startIcon={locking ? <CircularProgress size={"16px"} /> : <LockIcon fontSize="small" />}
+							disabled={locking}
 						>
 							Encrypt
 						</Button>
@@ -160,9 +144,7 @@ const LockPdf = () => {
 						<Button
 							size="small"
 							onClick={() => {
-								const url = URL.createObjectURL(locked);
-								window.open(url);
-								URL.revokeObjectURL(url);
+								window.open(locked);
 							}}
 							variant="contained"
 							startIcon={<FileDownloadIcon fontSize="small" />}
@@ -171,53 +153,10 @@ const LockPdf = () => {
 						</Button>
 					)}
 				</Stack>
-				<PasswordModal {...passwordModal} />
+				<PasswordModal {...passwordModal} submitButtonText="Encrypt" />
 			</Box>
 		</>
 	);
 };
 
 export default LockPdf;
-
-const PasswordModal = ({ open, onSubmit, onCancel }) => {
-	return (
-		<Modal open={open} onClose={onCancel}>
-			<Box sx={{ ...modalStyle, width: 400 }}>
-				{/* <Typography variant="h6" fontWeight={600}>
-					Create new model
-				</Typography> */}
-				<Box
-					component="form"
-					onSubmit={(e) => {
-						e.preventDefault();
-						const formData = new FormData(e.target);
-						onSubmit(formData.get("password"));
-					}}
-				>
-					<TextField
-						type="password"
-						size="small"
-						label="Password"
-						variant="outlined"
-						name="password"
-						fullWidth
-						required
-					/>
-					<Stack spacing={1} padding={"8px 0"} direction={"row-reverse"} marginTop={3}>
-						<Button
-							size="small"
-							variant="contained"
-							startIcon={<LockIcon fontSize="small" />}
-							type="submit"
-						>
-							Encrypt
-						</Button>
-						<Button size="small" variant="outlined" onClick={onCancel}>
-							Cancel
-						</Button>
-					</Stack>
-				</Box>
-			</Box>
-		</Modal>
-	);
-};

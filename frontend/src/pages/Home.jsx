@@ -6,6 +6,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ImageIcon from "@mui/icons-material/Image";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import DrawIcon from '@mui/icons-material/Draw';
 
 const Home = () => {
 	return (
@@ -48,6 +49,13 @@ const AllTools = () => {
 						to={"/app/image-to-pdf"}
 					/>
 				</Grid>
+        <Grid item>
+					<ToolCard
+						label={"Sign PDF"}
+						icon={<ToolIcon icon={DrawIcon} />}
+						to={"/app/sign-pdf"}
+					/>
+				</Grid>
 			</Grid>
 		</>
 	);
@@ -79,7 +87,7 @@ const ToolCard = ({ icon, label, to }) => {
 
 const ToolIconPair = ({ icon1: Icon1, icon2: Icon2 }) => {
 	return (
-		<Stack direction={"row"}>
+		<Stack direction={"row"} alignItems={"center"}>
 			<Icon1
 				sx={{
 					padding: 1,

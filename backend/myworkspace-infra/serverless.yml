@@ -1,0 +1,42 @@
+service: myworkspace-infra
+frameworkVersion: '3'
+
+custom:
+  accountId: ${aws:accountId}
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  stage: ${opt:stage, 'dev'}
+
+resources:
+  Resources:
+    MyWorkspaceFilesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-files-${self:provider.stage}
+        AccessControl: Private
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - "*"
+              AllowedMethods:
+                - GET
+                - PUT
+              AllowedHeaders:
+                - "*"
+              MaxAge: 3000
+        Tags:
+          - Key: Environment
+            Value: development
+

@@ -1,0 +1,2 @@
+[ 29/09/2024 15:00:51 ] OutputFile::OpenFile, Unexpected Failure. Cannot open file for writing - /tmp/decrypted/16614_1727602251.PDF
+[ 29/09/2024 15:03:58 ] PDFDocumentHandler::StartCopyingContext, Cant decrypt document. make sure to provide appropriate password for this document in order to copy from it
