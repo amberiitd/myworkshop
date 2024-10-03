@@ -64,10 +64,14 @@ const AddedFiles = ({ files, onAdd, onRemove, onRotate }) => {
 const FileCard = ({ file: { rawFile: file, rotation = 0 }, onRemove, onRotate }) => {
 	const canvasRef = useRef();
 	const { render } = useRenderPDF(canvasRef);
+	const renderTaskRef = useRef();
 
 	useEffect(() => {
-		if (file) render(file, { rotation });
-	}, [file, rotation]);
+    if (renderTaskRef.current ) return;
+		renderTaskRef.current = render(file, { rotation }).then(() => {
+			renderTaskRef.current = null;
+		});
+	}, [rotation]);
 
 	return (
 		<FileCardWrapper name={file.name} onRemove={onRemove} onRotate={onRotate}>

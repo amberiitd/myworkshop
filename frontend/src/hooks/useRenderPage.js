@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const useRenderPage = () => {
-	const renderTaskRef = useRef();
 	const [totalPage, setTotalPage] = useState(0);
 	const [pdfDocument, setPdfDocument] = useState();
 	const eventBus = useMemo(() => new pdfjsViewer.EventBus(), []);

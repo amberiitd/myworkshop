@@ -1,14 +1,13 @@
-import { Grid, Typography, Button, CircularProgress, Divider, Stack, Box } from "@mui/material";
-import { isEmpty, uniqBy } from "lodash";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { EmptySpaceUploader } from "./common/common";
-import FileCardWrapper from "./common/FileCardWrapper";
 import CloseIcon from "@mui/icons-material/Close";
-import { useCallback } from "react";
-import AddFileButton from "../components/AddFileButton";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import MergeIcon from "@mui/icons-material/Merge";
+import { Button, CircularProgress, Divider, Grid, Stack, Typography } from "@mui/material";
+import { isEmpty, uniqBy } from "lodash";
 import { degrees, PDFDocument } from "pdf-lib";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import AddFileButton from "../components/AddFileButton";
+import { EmptySpaceUploader } from "./common/common";
+import FileCardWrapper from "./common/FileCardWrapper";
 
 const ImageToPdf = () => {
 	const [addedFiles, setAddedFiles] = useState([]);

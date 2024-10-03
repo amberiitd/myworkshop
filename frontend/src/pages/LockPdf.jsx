@@ -1,17 +1,16 @@
-import { Box, Button, CircularProgress, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import useAddFiles from "../hooks/useAddFiles";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { isEmpty, noop } from "lodash";
-import useRenderPDF from "../hooks/useRenderPDF";
 import CloseIcon from "@mui/icons-material/Close";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import LockIcon from "@mui/icons-material/Lock";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { Box, Button, CircularProgress, IconButton, Stack, Typography } from "@mui/material";
+import { isEmpty, noop } from "lodash";
+import { PDFDocument } from "pdf-lib";
+import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import PasswordModal from "./common/PasswordModal";
+import useAddFiles from "../hooks/useAddFiles";
+import useRenderPDF from "../hooks/useRenderPDF";
 import { upload } from "../service/upload";
+import PasswordModal from "./common/PasswordModal";
 
 const LockPdf = () => {
 	const [file, setFile] = useState();

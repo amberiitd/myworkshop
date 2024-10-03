@@ -1,16 +1,15 @@
 import { Route, Routes } from "react-router-dom";
 import BottomBar from "../components/BottomBar";
-import Home from "./Home";
+import MainLayout from "../components/MainLayout";
 import NavBar from "../components/Navbar";
 import AppSideBar from "../components/Sidebar";
 import { useAppContext } from "../contexts/appContext";
-import MainLayout from "../components/MainLayout";
-import MergePdfs from "./MergePdfs";
-import UnlockPdf from "./UnlockPdf";
-import LockPdf from "./LockPdf";
+import Home from "./Home";
 import ImageToPdf from "./ImageToPdf";
-import Experiment from "./Experiment";
+import LockPdf from "./LockPdf";
+import MergePdfs from "./MergePdfs";
 import SignPdf from "./SignPdf";
+import UnlockPdf from "./UnlockPdf";
 
 const AppLayout = () => {
 	const { windowSize } = useAppContext();

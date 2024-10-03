@@ -1,22 +1,20 @@
-import { Box, Button, Divider, IconButton, Modal, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import useAddFiles from "../hooks/useAddFiles";
-import { isEmpty } from "lodash";
-import useRenderPDF from "../hooks/useRenderPDF";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import useRenderPage from "../hooks/useRenderPage";
 import DrawIcon from "@mui/icons-material/Draw";
-import { useDropdown } from "../hooks/useDropdown";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { Box, Button, IconButton, Modal, Stack, Typography } from "@mui/material";
+import { isEmpty } from "lodash";
+import { degrees, PDFDocument } from "pdf-lib";
+import { useCallback, useEffect, useRef, useState } from "react";
 import SignaturePad from "react-signature-canvas";
-import { wait } from "../util";
-import useFabricDraw from "../hooks/useFabricDraw";
 import { toast } from "react-toastify";
-import { degrees, PDFDocument, PDFImage, PDFPage } from "pdf-lib";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import CloseIcon from "@mui/icons-material/Close";
+import useAddFiles from "../hooks/useAddFiles";
+import { useDropdown } from "../hooks/useDropdown";
+import useFabricDraw from "../hooks/useFabricDraw";
+import useRenderPage from "../hooks/useRenderPage";
 
 const SignPdf = () => {
 	const [file, setFile] = useState();
@@ -66,17 +64,6 @@ const SignPdf = () => {
 
 	// 	insertDrawLayer();
 	// }, [pageNumber]);
-
-	const base64ToUint8Array = (base64) => {
-		console.log("base64 \n", base64);
-		const binaryString = window.atob(base64);
-		const len = binaryString.length;
-		const bytes = new Uint8Array(len);
-		for (let i = 0; i < len; i++) {
-			bytes[i] = binaryString.charCodeAt(i);
-		}
-		return bytes;
-	};
 
 	const finishSign = useCallback(async () => {
 		const imageMap = getObjects();
