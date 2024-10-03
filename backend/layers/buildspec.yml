@@ -7,10 +7,13 @@ phases:
     commands:
       - echo "Installing Serverless Framework"
       - npm install -g serverless
+      - cd ./backend/layers
       - echo "Installing dependencies"
       - npm install
+      - cd ../../
 
   build:
     commands:
       - echo "Deploying with Serverless Framework"
+      - cd ./backend/layers
       - sls deploy --stage dev
