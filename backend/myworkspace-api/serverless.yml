@@ -31,6 +31,8 @@ functions:
   generalApi:
     handler: src/index.handler
     timeout: 30
+    layers:
+      - arn:aws:lambda:ap-south-1:343547439778:layer:myworkspaceLayerOne:1
     events:
       - http:
           path: uploads/{proxy+}
@@ -71,8 +73,6 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
               - X-Auth-Token
-
-
 
 plugins:
   - serverless-offline

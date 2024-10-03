@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - echo "Installing Serverless Framework"
+      - npm install -g serverless
+      - echo "Installing dependencies"
+      - npm install
+
+  build:
+    commands:
+      - echo "Deploying with Serverless Framework"
+      - sls deploy --stage dev

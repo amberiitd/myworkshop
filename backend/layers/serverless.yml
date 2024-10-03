@@ -1,0 +1,18 @@
+service: myworkspace-layer-one
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ap-south-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
+
+layers:
+  myworkspaceLayerOne:
+    path: ./
+    compatibleRuntimes:
+      - nodejs16.x
