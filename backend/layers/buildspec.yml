@@ -7,10 +7,10 @@ phases:
     commands:
       - echo "Installing Serverless Framework"
       - npm install -g serverless
-      - cd ./backend/layers
+      - cd ./backend/layers/nodejs
       - echo "Installing dependencies"
       - npm install
-      - cd ../../
+      - cd ../../../
 
   build:
     commands:
