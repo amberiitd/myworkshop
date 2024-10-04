@@ -8,7 +8,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   region: ap-south-1
   stage: ${opt:stage, 'dev'}
   environment:
@@ -32,7 +32,7 @@ functions:
     handler: src/index.handler
     timeout: 30
     layers:
-      - arn:aws:lambda:ap-south-1:343547439778:layer:myworkspaceLayerOne:1
+      - arn:aws:lambda:ap-south-1:343547439778:layer:myworkspaceLayerOne:2
     events:
       - http:
           path: uploads/{proxy+}

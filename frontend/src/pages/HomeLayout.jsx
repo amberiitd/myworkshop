@@ -10,6 +10,7 @@ import LockPdf from "./LockPdf";
 import MergePdfs from "./MergePdfs";
 import SignPdf from "./SignPdf";
 import UnlockPdf from "./UnlockPdf";
+import JWTUtil from "./JWTUtil";
 
 const AppLayout = () => {
 	const { windowSize } = useAppContext();
@@ -27,6 +28,7 @@ const AppLayout = () => {
 					<Route path="image-to-pdf" element={<ImageToPdf />} />
 					{/* <Route path="experiment" element={<Experiment />} /> */}
 					<Route path="sign-pdf" element={<SignPdf />} />
+          <Route path="jwt" element={<JWTUtil />} />
 				</Routes>
 			</MainLayout>
 		</div>

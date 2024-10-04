@@ -4,7 +4,7 @@ frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   region: ap-south-1
   stage: ${opt:stage, 'dev'}
   environment:
@@ -15,4 +15,4 @@ layers:
   myworkspaceLayerOne:
     path: ./
     compatibleRuntimes:
-      - nodejs16.x
+      - nodejs18.x
