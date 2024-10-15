@@ -9,7 +9,7 @@ import { PDFDocument } from "pdf-lib";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import useAddFiles from "../hooks/useAddFiles";
-import useRenderPDF from "../hooks/useRenderPDF";
+import useRender from "../hooks/useRender";
 import { upload } from "../service/upload";
 import FileCardWrapper from "./common/FileCardWrapper";
 import PasswordModal from "./common/PasswordModal";
@@ -17,7 +17,7 @@ import PasswordModal from "./common/PasswordModal";
 const UnlockPdf = () => {
 	const [file, setFile] = useState();
 	const canvasRef = useRef();
-	const { render, renderPlaceHolder } = useRenderPDF(canvasRef);
+	const { render, renderPlaceHolder } = useRender(canvasRef);
 	const [unlocked, setUnlocked] = useState();
 	const [unlocking, setUnlocking] = useState(false);
 	const [passwordModal, setPasswordModal] = useState({ open: false, onSubmit: noop, onCancel: noop });

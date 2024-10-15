@@ -11,6 +11,7 @@ import MergePdfs from "./MergePdfs";
 import SignPdf from "./SignPdf";
 import UnlockPdf from "./UnlockPdf";
 import JWTUtil from "./JWTUtil";
+import OCR from "./OCR";
 
 const AppLayout = () => {
 	const { windowSize } = useAppContext();
@@ -26,6 +27,7 @@ const AppLayout = () => {
 					<Route path="unlock-pdf" element={<UnlockPdf />} />
 					<Route path="lock-pdf" element={<LockPdf />} />
 					<Route path="image-to-pdf" element={<ImageToPdf />} />
+          <Route path="ocr" element={<OCR />} />
 					{/* <Route path="experiment" element={<Experiment />} /> */}
 					<Route path="sign-pdf" element={<SignPdf />} />
           <Route path="jwt" element={<JWTUtil />} />

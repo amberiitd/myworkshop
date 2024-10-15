@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 import { isEmpty, uniqBy } from "lodash";
 import { useEffect, useRef, useState } from "react";
-import useRenderPDF from "../hooks/useRenderPDF";
+import useRender from "../hooks/useRender";
 import { EmptySpaceUploader } from "./common/common";
 import FileCardWrapper from "./common/FileCardWrapper";
 import CloseIcon from "@mui/icons-material/Close";
@@ -63,7 +63,7 @@ const AddedFiles = ({ files, onAdd, onRemove, onRotate }) => {
 
 const FileCard = ({ file: { rawFile: file, rotation = 0 }, onRemove, onRotate }) => {
 	const canvasRef = useRef();
-	const { render } = useRenderPDF(canvasRef);
+	const { render } = useRender(canvasRef);
 	const renderTaskRef = useRef();
 
 	useEffect(() => {

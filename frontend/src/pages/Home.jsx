@@ -8,6 +8,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DrawIcon from '@mui/icons-material/Draw';
 import TokenOutlinedIcon from '@mui/icons-material/TokenOutlined';
+import ScanIcon from "../components/icons/ScanIcon";
 
 const Home = () => {
 	return (
@@ -55,6 +56,13 @@ const AllTools = () => {
 						label={"Sign PDF"}
 						icon={<ToolIcon icon={DrawIcon} />}
 						to={"/app/sign-pdf"}
+					/>
+				</Grid>
+        <Grid item>
+					<ToolCard
+						label={"PDF OCR"}
+						icon={<ToolIcon icon={ScanIcon} />}
+						to={"/app/ocr"}
 					/>
 				</Grid>
         <Grid item>

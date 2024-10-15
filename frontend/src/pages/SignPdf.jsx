@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import useAddFiles from "../hooks/useAddFiles";
 import { useDropdown } from "../hooks/useDropdown";
 import useFabricDraw from "../hooks/useFabricDraw";
-import useRenderPage from "../hooks/useRenderPage";
+import useRenderPage from "../hooks/useRenderPdfPage";
 
 const SignPdf = () => {
 	const [file, setFile] = useState();
